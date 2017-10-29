@@ -135,14 +135,15 @@ def account_deletetable():
 
 @app.route("/newrequest/<tid>")
 def new_request(tid):
-    DB.add_request(tid, datetime.datetime.now())
-    return "Your request has been logged and a waiter will be with you shortly"
+    if DB.add_request(tid, datetime.datetime.now()):
+        return "Your request has been logged and a waiter will be with you shortly"
+    return "There is already a request pending for this table. Please be patient, a waiter will be there ASAP"
 
 @app.route("/dashboard/resolve")
 @login_required
 def dashboard_resolve():
     request_id = request.args.get("request_id")
-    DB.delete_requests(request_id)
+    DB.delete_request(request_id)
     return redirect(url_for('dashboard'))
 
 if __name__ == '__main__':
